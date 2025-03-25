@@ -2,6 +2,6 @@ package model.transaction.enums;
 
 public enum TransactionType {
     DEPOSIT,
-    WITHDRAM,
+    WITHDRAW,
     TRANSFER
 }
