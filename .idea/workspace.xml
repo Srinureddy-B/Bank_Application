@@ -5,11 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8470f62e-f412-4218-b3bb-902fba4dcf77" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/model/transaction/builder/TransactionBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/exception/AccountInactiveException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/exception/BankException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/exception/ErrorCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/exception/InsufficientBalanceException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/exception/InvalidAmountException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/exception/MinimumBalanceViolationException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/exception/OverdraftLimitExceedException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/account/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/account/Account.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/transaction/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/transaction/Transaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/transaction/enums/TransactionType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/transaction/enums/TransactionType.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,8 +23,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
-        <option value="Enum" />
         <option value="Class" />
+        <option value="Enum" />
+        <option value="Exception" />
       </list>
     </option>
   </component>
