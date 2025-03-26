@@ -4,10 +4,12 @@ import model.account.enums.AccountType;
 import model.interfaces.IAccountBase;
 import model.interfaces.IAccountOperation;
 import model.transaction.Transaction;
+import model.transaction.builder.TransactionBuilder;
 import model.transaction.enums.TransactionType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class Account implements IAccountBase, IAccountOperation {
@@ -19,6 +21,9 @@ public abstract class Account implements IAccountBase, IAccountOperation {
     private double balance;
     private boolean active;
     private List<Transaction> transactions;
+
+    private static final double MAX_TRANSACTION_AMOUNT = 100_000.0;
+    private static final double MIN_TRANSACTION_AMOUNT = 1.0;
 
 
     protected Account(String accountNumber, String accountHolderName, AccountType accountType) {
@@ -35,27 +40,27 @@ public abstract class Account implements IAccountBase, IAccountOperation {
 
     @Override
     public String getAccountNumber() {
-        return "";
+        return accountNumber;
     }
 
     @Override
     public double getBalance() {
-        return 0;
+        return balance;
     }
 
     @Override
     public String getAccountHolderName() {
-        return "";
+        return accountHolderName;
     }
 
     @Override
     public LocalDateTime getCreation() {
-        return null;
+        return creationDate;
     }
 
     @Override
     public boolean isActive() {
-        return false;
+        return active;
     }
 
     @Override
@@ -64,7 +69,7 @@ public abstract class Account implements IAccountBase, IAccountOperation {
         validateAccountActive();
 
         this.balance += amount;
-        addTransaction(new Transaction(TransactionType.DEPOSIT, amount, this.balance));
+        addTransaction(TransactionType.DEPOSIT, amount, this.balance);
     }
 
     @Override
@@ -74,7 +79,7 @@ public abstract class Account implements IAccountBase, IAccountOperation {
         validateSufficientBalance(amount);
 
         this.balance -= amount;
-        addTransaction(new Transaction(TransactionType.WITHDRAW, amount, this.balance));
+        addTransaction(TransactionType.WITHDRAW, amount, this.balance);
     }
 
     @Override
@@ -83,28 +88,38 @@ public abstract class Account implements IAccountBase, IAccountOperation {
         validateAccountActive();
         validateSufficientBalance(amount);
 
-        if (!(targetAccount instanceof Account)) {
+        if (!(targetAccount instanceof Account target)) {
             throw new IllegalArgumentException("Geçersiz Hedef Hesabı");
         }
 
-        Account target = (Account) targetAccount;
         if (!target.isActive()) {
             throw new IllegalStateException("Hedef Hesap Aktif Bir Hesap Değildir");
         }
 
         this.balance -= amount;
         target.deposit(amount);
-        addTransaction(new Transaction(TransactionType.TRANSFER, amount, this.balance));
+
+        Transaction transaction = new TransactionBuilder(TransactionType.TRANSFER, amount, this.balance, this.accountNumber)
+                .targetAccountNumber(target.getAccountNumber())
+                .description("Para Transferi İşlemi")
+                .build();
+        transactions.add(transaction);
     }
 
     @Override
     public List<Transaction> getTransactionHistory() {
-        return new ArrayList<>(transactions);
+        return Collections.unmodifiableList(transactions);
     }
 
     private void validateAmount(double amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Tutar Pozitif Olmalıdır");
+        }
+        if (amount < MIN_TRANSACTION_AMOUNT) {
+            throw new IllegalArgumentException("İşlem tutarı minimum " + MIN_TRANSACTION_AMOUNT + " olmalıdır");
+        }
+        if (amount > MAX_TRANSACTION_AMOUNT) {
+            throw new IllegalArgumentException("İşlem tutarı maksimum " + MAX_TRANSACTION_AMOUNT + " olmalıdır");
         }
     }
 
@@ -120,10 +135,12 @@ public abstract class Account implements IAccountBase, IAccountOperation {
         }
     }
 
-    private void addTransaction(Transaction transaction) {
+    private void addTransaction(TransactionType type, double amount, double balanceAfter) {
+        Transaction transaction = new TransactionBuilder(type, amount, balanceAfter, this.accountNumber)
+                .description(type.getDescription())
+                .build();
         transactions.add(transaction);
     }
-
     public void activate() {
         this.active = true;
     }
