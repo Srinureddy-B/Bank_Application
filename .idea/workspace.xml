@@ -5,14 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8470f62e-f412-4218-b3bb-902fba4dcf77" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/exception/AccountInactiveException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/exception/BankException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/exception/ErrorCode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/exception/InsufficientBalanceException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/exception/InvalidAmountException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/exception/MinimumBalanceViolationException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/exception/OverdraftLimitExceedException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/account/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/account/Account.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/account/CheckingAccount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/account/CheckingAccount.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/account/SavingsAccount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/account/SavingsAccount.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

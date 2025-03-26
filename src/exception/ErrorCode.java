@@ -3,6 +3,7 @@ package exception;
 public enum ErrorCode {
     INSUFFICIENT_BALANCE("Yetersiz Bakiye"),
     INVALID_AMOUNT("Geçersiz Tutar"),
+    INVALID_ACCOUNT_TYPE("Geçersiz Hesap Tipi"),
     ACCOUNT_INACTIVE("Hesap Aktif Değil"),
     ACCOUNT_NOT_FOUND("Hesap Bulunamadı"),
 

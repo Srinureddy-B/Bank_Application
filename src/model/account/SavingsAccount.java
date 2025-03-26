@@ -1,5 +1,7 @@
 package model.account;
 
+import exception.InvalidAmountException;
+import exception.MinimumBalanceViolationException;
 import model.account.enums.AccountType;
 import model.account.interfaces.IInterestCalculatable;
 
@@ -17,7 +19,7 @@ public class SavingsAccount extends Account implements IInterestCalculatable {
     public void withdraw(double amount) {
 
         if (getBalance() - amount < minimumBalance) {
-            throw new IllegalStateException("Minimum bakiye koruması: En az " + minimumBalance + " tutarında bakiye kalmalıdır");
+            throw new MinimumBalanceViolationException("Minimum bakiye koruması: En az " + minimumBalance + " tutarında bakiye kalmalıdır");
         }
 
 
@@ -37,7 +39,7 @@ public class SavingsAccount extends Account implements IInterestCalculatable {
     @Override
     public void setInterestRate(double rate) {
         if (rate < 0) {
-            throw new IllegalArgumentException("Faiz oranı negatif olamaz");
+            throw new InvalidAmountException("Faiz oranı negatif olamaz");
         }
         this.interestRate = rate;
     }
@@ -61,7 +63,7 @@ public class SavingsAccount extends Account implements IInterestCalculatable {
 
     public void setMinimumBalance(double minimumBalance) {
         if (minimumBalance < 0) {
-            throw new IllegalArgumentException("Minimum bakiye negatif olamaz");
+            throw new InvalidAmountException("Minimum bakiye negatif olamaz");
         }
         this.minimumBalance = minimumBalance;
     }

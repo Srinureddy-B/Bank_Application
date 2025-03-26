@@ -1,5 +1,6 @@
 package model.account;
 
+import exception.OverdraftLimitExceedException;
 import model.account.enums.AccountType;
 
 public class CheckingAccount extends Account {
@@ -24,9 +25,9 @@ public class CheckingAccount extends Account {
 
 
             deposit(remainingAmount);
-            withdraw(overdraftFee); // Overdraft ücreti
+            withdraw(overdraftFee);
         } else {
-            throw new IllegalStateException("Overdraft limiti aşıldı");
+            throw new OverdraftLimitExceedException("Overdraft limiti aşıldı");
         }
     }
 

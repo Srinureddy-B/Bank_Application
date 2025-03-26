@@ -1,5 +1,9 @@
 package model.account;
 
+import exception.AccountInactiveException;
+import exception.InsufficientBalanceException;
+import exception.InvalidAccountException;
+import exception.InvalidAmountException;
 import model.account.enums.AccountType;
 import model.interfaces.IAccountBase;
 import model.interfaces.IAccountOperation;
@@ -89,11 +93,11 @@ public abstract class Account implements IAccountBase, IAccountOperation {
         validateSufficientBalance(amount);
 
         if (!(targetAccount instanceof Account target)) {
-            throw new IllegalArgumentException("Geçersiz Hedef Hesabı");
+            throw new InvalidAccountException("Geçersiz Hedef Hesabı");
         }
 
         if (!target.isActive()) {
-            throw new IllegalStateException("Hedef Hesap Aktif Bir Hesap Değildir");
+            throw new AccountInactiveException("Hedef Hesap Aktif Bir Hesap Değildir");
         }
 
         this.balance -= amount;
@@ -113,25 +117,25 @@ public abstract class Account implements IAccountBase, IAccountOperation {
 
     private void validateAmount(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Tutar Pozitif Olmalıdır");
+            throw new InvalidAmountException("Tutar Pozitif Olmalıdır");
         }
         if (amount < MIN_TRANSACTION_AMOUNT) {
-            throw new IllegalArgumentException("İşlem tutarı minimum " + MIN_TRANSACTION_AMOUNT + " olmalıdır");
+            throw new InvalidAmountException("İşlem tutarı minimum " + MIN_TRANSACTION_AMOUNT + " olmalıdır");
         }
         if (amount > MAX_TRANSACTION_AMOUNT) {
-            throw new IllegalArgumentException("İşlem tutarı maksimum " + MAX_TRANSACTION_AMOUNT + " olmalıdır");
+            throw new InvalidAmountException("İşlem tutarı maksimum " + MAX_TRANSACTION_AMOUNT + " olmalıdır");
         }
     }
 
     private void validateAccountActive() {
         if (!this.active) {
-            throw new IllegalStateException("Hesap Aktif Değil");
+            throw new AccountInactiveException("Hesap Aktif Değil");
         }
     }
 
     private void validateSufficientBalance(double amount) {
         if (this.balance < amount) {
-            throw new IllegalStateException("Yetersiz Bakiye");
+            throw new InsufficientBalanceException("Yetersiz Bakiye");
         }
     }
 
