@@ -15,7 +15,16 @@ public enum ErrorCode {
     ACCOUNT_ALREADY_EXISTS("Hesap Zaten Mevcut"),
     ACCOUNT_ALREADY_ACTIVE("Hesap Zaten Aktif"),
     ACCOUNT_ALREADY_INACTIVE("Hesap Zaten Pasif"),
-    TARGET_ACCOUNT_INACTIVE("Hedef Hesap Aktif Değil");
+    TARGET_ACCOUNT_INACTIVE("Hedef Hesap Aktif Değil"),
+    INVALID_EMAIL("Geçersiz E-posta Formatı"),
+    INVALID_PHONE("Geçersiz Telefon Numarası"),
+    INVALID_NAME("Geçersiz İsim"),
+    INVALID_PASSWORD("Geçersiz Şifre"),
+    INVALID_ACCOUNT_NUMBER("Geçersiz Hesap Numarası"),
+    EMPTY_INPUT("Boş Giriş"),
+    INVALID_ADDRESS("Geçersiz Adres"),
+    INVALID_DATE("Geçersiz Tarih"),
+    INVALID_CUSTOMER_ID("Geçersiz Müşteri ID");
 
     private final String message;
 
