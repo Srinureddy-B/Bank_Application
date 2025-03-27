@@ -1,5 +1,7 @@
 package service;
 
+import exception.ErrorCode;
+import exception.InvalidAccountException;
 import model.account.Account;
 import model.account.enums.AccountType;
 import model.customer.Customer;
@@ -30,6 +32,12 @@ public class CustomerService {
     //   * customers: Müşteri bilgilerini tutar
     //   * customerAccounts: Müşteri hesaplarını tutar
     public void registerCustomer(Customer customer) {
+        if (customer == null) {
+            throw new InvalidAccountException(ErrorCode.INVALID_TRANSACTION.getMessage());
+        }
+        if (customers.containsKey(customer.getCustomerId())) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_ALREADY_EXISTS.getMessage());
+        }
         customers.put(customer.getCustomerId(), customer);
         customerAccounts.put(customer.getCustomerId(), new ArrayList<>());
     }
@@ -39,8 +47,12 @@ public class CustomerService {
     // - Null kontrolü daha güvenli
     // - Müşteri bulunamazsa boş Optional döner
     // - NullPointerException riskini azaltır
-    public Optional<Customer> getCustomer(String customerId) {
-        return Optional.ofNullable(customers.get(customerId));
+    public Customer getCustomer(UUID customerId) {
+        Customer customer = customers.get(customerId);
+        if (customer == null) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_NOT_FOUND.getMessage());
+        }
+        return customer;
     }
 
     // Güvenli Liste Dönüşü:
@@ -48,7 +60,10 @@ public class CustomerService {
     // - Müşteri bulunamazsa null yerine boş liste döner
     // - NullPointerException riskini ortadan kaldırır
     // - Kod daha güvenli ve okunabilir olur
-    public List<Account> getCustomerAccounts(String customerId) {
+    public List<Account> getCustomerAccounts(UUID customerId) {
+        if (!customers.containsKey(customerId)) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_NOT_FOUND.getMessage());
+        }
         return customerAccounts.getOrDefault(customerId, new ArrayList<>());
     }
 
@@ -58,6 +73,12 @@ public class CustomerService {
     // - Yeni müşteri için otomatik liste oluşturuyor
     // - Daha güvenli kod
     public void addAccountToCustomer(UUID customerId, Account account) {
+        if (!customers.containsKey(customerId)) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_NOT_FOUND.getMessage());
+        }
+        if (account == null) {
+            throw new InvalidAccountException(ErrorCode.INVALID_TRANSACTION.getMessage());
+        }
         customerAccounts.computeIfAbsent(customerId, k -> new ArrayList<>())
                 .add(account);
     }
@@ -70,7 +91,10 @@ public class CustomerService {
     // mapToDouble kullanıyoruz çünkü:
     // - Account nesnelerinden double değerleri alıyoruz
     // - sum() ile toplama yapıyoruz
-    public double getCustomerTotalBalance(String customerId) {
+    public double getCustomerTotalBalance(UUID customerId) {
+        if (!customers.containsKey(customerId)) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_NOT_FOUND.getMessage());
+        }
         return getCustomerAccounts(customerId).stream()
                 .mapToDouble(Account::getBalance)
                 .sum();
@@ -81,7 +105,10 @@ public class CustomerService {
     // - Belirli koşullara uyan hesapları filtreliyoruz
     // - collect ile sonuçları listeye çeviriyoruz
     // - Daha temiz ve anlaşılır kod
-    public List<Account> getCustomerAccountsByType(String customerId, AccountType type) {
+    public List<Account> getCustomerAccountsByType(UUID customerId, AccountType type) {
+        if (!customers.containsKey(customerId)) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_NOT_FOUND.getMessage());
+        }
         return getCustomerAccounts(customerId).stream()
                 .filter(account -> account.getAccountType() == type)
                 .collect(Collectors.toList());
@@ -93,9 +120,13 @@ public class CustomerService {
     // - Gereksiz güncelleme işlemlerini önlüyoruz
     // - Daha güvenli kod
     public void updateCustomerInfo(UUID customerId, Customer updatedCustomer) {
-        if (customers.containsKey(customerId)) {
-            customers.put(customerId, updatedCustomer);
+        if (!customers.containsKey(customerId)) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_NOT_FOUND.getMessage());
         }
+        if (updatedCustomer == null) {
+            throw new InvalidAccountException(ErrorCode.INVALID_TRANSACTION.getMessage());
+        }
+        customers.put(customerId, updatedCustomer);
     }
 
     // Güvenli Silme İşlemi:
@@ -104,9 +135,16 @@ public class CustomerService {
     // - Null kontrolü yapıyoruz
     // - Daha güvenli silme işlemi
     public void closeCustomerAccount(UUID customerId, String accountNumber) {
+        if (!customers.containsKey(customerId)) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_NOT_FOUND.getMessage());
+        }
         List<Account> accounts = customerAccounts.get(customerId);
-        if (accounts != null) {
-            accounts.removeIf(account -> account.getAccountNumber().equals(accountNumber));
+        if (accounts == null || accounts.isEmpty()) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_NOT_FOUND.getMessage());
+        }
+        boolean removed = accounts.removeIf(account -> account.getAccountNumber().equals(accountNumber));
+        if (!removed) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_NOT_FOUND.getMessage());
         }
     }
 }

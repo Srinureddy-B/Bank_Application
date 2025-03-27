@@ -1,5 +1,6 @@
 package service;
 
+import exception.*;
 import model.account.Account;
 import model.account.CheckingAccount;
 import model.account.enums.AccountType;
@@ -18,22 +19,34 @@ public class AccountService {
     }
 
     public Account createCheckingAccount(String accountNumber, String accountHolderName) {
+        if (accountMap.containsKey(accountNumber)) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_ALREADY_EXISTS.getMessage());
+        }
+
         Account account = new CheckingAccount(accountNumber, accountHolderName);
         accountMap.put(accountNumber,account);
         return account;
     }
 
     public Account createSavingsAccount(String accountNumber, String accountHolderName) {
+        if (accountMap.containsKey(accountNumber)) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_ALREADY_EXISTS.getMessage());
+        }
+
         Account account = new CheckingAccount(accountNumber, accountHolderName);
         accountMap.put(accountNumber,account);
         return account;
     }
 
     public Account getAccount(String accountNumber) {
-        return accountMap.get(accountNumber);
+        Account account = accountMap.get(accountNumber);
+        if (account == null) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_NOT_FOUND.getMessage());
+        }
+        return account;
     }
 
-    public List<Account> getAllAcounts() {
+    public List<Account> getAllAccounts() {
         return new ArrayList<>(accountMap.values());
     }
 
@@ -44,33 +57,56 @@ public class AccountService {
     }
 
     public void deposit(String accountNumber, double amount) {
-        Account account =  getAccount(accountNumber);
-        if (account != null) {
-            account.deposit(amount);
+        if (amount <= 0) {
+            throw new InvalidAmountException(ErrorCode.INVALID_AMOUNT.getMessage());
         }
+        Account account = getAccount(accountNumber);
+        if (!account.isActive()) {
+            throw new AccountInactiveException(ErrorCode.ACCOUNT_INACTIVE.getMessage());
+        }
+        account.deposit(amount);
     }
 
     public void withdraw(String accountNumber, double amount) {
-        Account account = getAccount(accountNumber);
-        if (account != null) {
-            account.withdraw(amount);
+        if (amount <= 0) {
+            throw new InvalidAmountException(ErrorCode.INVALID_AMOUNT.getMessage());
         }
+        Account account = getAccount(accountNumber);
+        if (!account.isActive()) {
+            throw new AccountInactiveException(ErrorCode.ACCOUNT_INACTIVE.getMessage());
+        }
+        if (account.getBalance() < amount) {
+            throw new InsufficientBalanceException(ErrorCode.INSUFFICIENT_BALANCE.getMessage());
+        }
+        account.withdraw(amount);
     }
 
     public void transfer(String fromAccountNumber, String toAccountNumber, double amount) {
+        if (amount <= 0) {
+            throw new InvalidAmountException(ErrorCode.INVALID_AMOUNT.getMessage());
+        }
         Account fromAccount = getAccount(fromAccountNumber);
         Account toAccount = getAccount(toAccountNumber);
 
-        if (fromAccount != null && toAccount != null) {
-            fromAccount.transfer(toAccount, amount);
+        if (!fromAccount.isActive()) {
+            throw new AccountInactiveException(ErrorCode.ACCOUNT_INACTIVE.getMessage());
         }
+        if (!toAccount.isActive()) {
+            throw new AccountInactiveException(ErrorCode.TARGET_ACCOUNT_INACTIVE.getMessage());
+        }
+        if (fromAccount.getBalance() < amount) {
+            throw new InsufficientBalanceException(ErrorCode.INSUFFICIENT_BALANCE.getMessage());
+        }
+
+        fromAccount.transfer(toAccount, amount);
     }
 
     public void activateAccount(String accountNumber) {
         Account account = getAccount(accountNumber);
-        if (account != null) {
-            account.activate();
+        if (account.isActive()) {
+            throw new InvalidAccountException(ErrorCode.ACCOUNT_ALREADY_ACTIVE.getMessage());
         }
+        account.activate();
     }
 
     public void deactivateAccount(String accountNumber) {

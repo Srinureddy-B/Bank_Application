@@ -1,5 +1,7 @@
 package service;
 
+import exception.ErrorCode;
+import exception.InvalidAccountException;
 import model.transaction.Transaction;
 import model.transaction.enums.TransactionType;
 
@@ -19,16 +21,28 @@ public class TransactionService {
     }
 
     public void recordTransaction(Transaction transaction) {
+        if (transaction == null) {
+            throw new InvalidAccountException(ErrorCode.INVALID_TRANSACTION.getMessage());
+        }
         String accountNumber = transaction.getAccountNumber();
+        if (accountNumber == null || accountNumber.trim().isEmpty()) {
+            throw new InvalidAccountException(ErrorCode.INVALID_TRANSACTION.getMessage());
+        }
         accountTransactions.computeIfAbsent(accountNumber, k -> new ArrayList<>())
                 .add(transaction);
     }
 
     public List<Transaction> getAccountTransactions(String accountNumber) {
+        if (accountNumber == null || accountNumber.trim().isEmpty()) {
+            throw new InvalidAccountException(ErrorCode.INVALID_TRANSACTION.getMessage());
+        }
         return accountTransactions.getOrDefault(accountNumber, new ArrayList<>());
     }
 
     public List<Transaction> getTransactionsAfter(LocalDateTime date) {
+        if (date == null) {
+            throw new InvalidAccountException(ErrorCode.INVALID_TRANSACTION.getMessage());
+        }
         return accountTransactions.values().stream()
                 .flatMap(List::stream)
                 .filter(t -> t.getDate().isAfter(date))
@@ -43,6 +57,9 @@ public class TransactionService {
     }
 
     public List<Transaction> getTransactionsByType(TransactionType type) {
+        if (type == null) {
+            throw new InvalidAccountException(ErrorCode.INVALID_TRANSACTION.getMessage());
+        }
         return accountTransactions.values().stream()
                 .flatMap(List::stream)
                 .filter(t -> t.getType() == type)
