@@ -52,6 +52,10 @@ public abstract class Account implements IAccountBase, IAccountOperation {
         return balance;
     }
 
+    public AccountType getAccountType() {
+        return accountType;
+    }
+
     @Override
     public String getAccountHolderName() {
         return accountHolderName;
