@@ -1,6 +1,6 @@
 package controller;
 
-import exception.InvalidAccountException;
+import exception.*;
 import model.account.Account;
 import model.account.enums.AccountType;
 import model.customer.Customer;
@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class CustomerController {
-
     private final CustomerService customerService;
 
     public CustomerController(CustomerService customerService) {
@@ -21,7 +20,7 @@ public class CustomerController {
         try {
             customerService.registerCustomer(customer);
             return true;
-        } catch (InvalidAccountException e) {
+        } catch (InvalidCustomerIdException | InvalidAccountException e) {
             System.out.println("Hata: " + e.getMessage());
             return false;
         }
@@ -30,7 +29,7 @@ public class CustomerController {
     public List<Account> getCustomerAccounts(UUID customerId) {
         try {
             return customerService.getCustomerAccounts(customerId);
-        } catch (InvalidAccountException e) {
+        } catch (InvalidCustomerIdException | InvalidAccountException e) {
             System.out.println("Hata: " + e.getMessage());
             return null;
         }
@@ -40,7 +39,7 @@ public class CustomerController {
         try {
             customerService.addAccountToCustomer(customerId, account);
             return true;
-        } catch (InvalidAccountException e) {
+        } catch (InvalidCustomerIdException | InvalidAccountException e) {
             System.out.println("Hata: " + e.getMessage());
             return false;
         }
@@ -49,7 +48,7 @@ public class CustomerController {
     public double getCustomerTotalBalance(UUID customerId) {
         try {
             return customerService.getCustomerTotalBalance(customerId);
-        } catch (InvalidAccountException e) {
+        } catch (InvalidCustomerIdException | InvalidAccountException e) {
             System.out.println("Hata: " + e.getMessage());
             return 0.0;
         }
@@ -58,7 +57,7 @@ public class CustomerController {
     public List<Account> getCustomerAccountsByType(UUID customerId, AccountType type) {
         try {
             return customerService.getCustomerAccountsByType(customerId, type);
-        } catch (InvalidAccountException e) {
+        } catch (InvalidCustomerIdException | InvalidAccountException e) {
             System.out.println("Hata: " + e.getMessage());
             return null;
         }
@@ -68,7 +67,7 @@ public class CustomerController {
         try {
             customerService.updateCustomerInfo(customerId, updatedCustomer);
             return true;
-        } catch (InvalidAccountException e) {
+        } catch (InvalidCustomerIdException | InvalidAccountException e) {
             System.out.println("Hata: " + e.getMessage());
             return false;
         }
@@ -78,7 +77,7 @@ public class CustomerController {
         try {
             customerService.closeCustomerAccount(customerId, accountNumber);
             return true;
-        } catch (InvalidAccountException e) {
+        } catch (InvalidCustomerIdException | InvalidAccountException e) {
             System.out.println("Hata: " + e.getMessage());
             return false;
         }
