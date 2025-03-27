@@ -1,6 +1,7 @@
 package model.transaction;
 
 import model.transaction.enums.TransactionType;
+import util.ValidationUtil;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -55,6 +56,7 @@ public class Transaction {
     }
 
     public void setTargetAccountNumber(String targetAccountNumber) {
+        ValidationUtil.validateAccountNumber(targetAccountNumber);
         this.targetAccountNumber = targetAccountNumber;
     }
 
@@ -63,6 +65,9 @@ public class Transaction {
     }
 
     public void setDescription(String description) {
+        if (description != null && !description.trim().isEmpty()) {
+            ValidationUtil.validateName(description);
+        }
         this.description = description;
     }
 

@@ -2,6 +2,7 @@ package service;
 
 import exception.ErrorCode;
 import exception.InvalidAccountException;
+import exception.InvalidCustomerIdException;
 import model.account.Account;
 import model.account.enums.AccountType;
 import model.customer.Customer;
@@ -33,7 +34,7 @@ public class CustomerService {
     //   * customerAccounts: Müşteri hesaplarını tutar
     public void registerCustomer(Customer customer) {
         if (customer == null) {
-            throw new InvalidAccountException(ErrorCode.INVALID_TRANSACTION.getMessage());
+            throw new InvalidCustomerIdException(ErrorCode.INVALID_CUSTOMER_ID.getMessage());
         }
         if (customers.containsKey(customer.getCustomerId())) {
             throw new InvalidAccountException(ErrorCode.ACCOUNT_ALREADY_EXISTS.getMessage());
@@ -48,6 +49,9 @@ public class CustomerService {
     // - Müşteri bulunamazsa boş Optional döner
     // - NullPointerException riskini azaltır
     public Customer getCustomer(UUID customerId) {
+        if (customerId == null) {
+            throw new InvalidCustomerIdException(ErrorCode.INVALID_CUSTOMER_ID.getMessage());
+        }
         Customer customer = customers.get(customerId);
         if (customer == null) {
             throw new InvalidAccountException(ErrorCode.ACCOUNT_NOT_FOUND.getMessage());

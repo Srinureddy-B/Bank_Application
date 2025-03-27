@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.*;
 import model.account.Account;
 import model.customer.enums.CustomerType;
+import util.ValidationUtil;
 
 public class Customer {
     private final UUID customerId;
@@ -83,6 +84,7 @@ public class Customer {
     }
 
     public void setFirstName(String firstName) {
+        ValidationUtil.validateName(firstName);
         this.firstName = firstName;
     }
 
@@ -91,14 +93,17 @@ public class Customer {
     }
 
     public void setLastName(String lastName) {
+        ValidationUtil.validateName(lastName);
         this.lastName = lastName;
     }
+
 
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
+        ValidationUtil.validateEmail(email);
         this.email = email;
     }
 
@@ -107,6 +112,7 @@ public class Customer {
     }
 
     public void setPhoneNumber(String phoneNumber) {
+        ValidationUtil.validatePhoneNumber(phoneNumber);
         this.phoneNumber = phoneNumber;
     }
 
@@ -115,6 +121,7 @@ public class Customer {
     }
 
     public void setAddress(String address) {
+        ValidationUtil.validateAddress(address);
         this.address = address;
     }
 
@@ -123,6 +130,7 @@ public class Customer {
     }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
+        ValidationUtil.validateDateOfBirth(dateOfBirth);
         this.dateOfBirth = dateOfBirth;
     }
 

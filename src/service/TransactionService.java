@@ -1,7 +1,6 @@
 package service;
 
-import exception.ErrorCode;
-import exception.InvalidAccountException;
+import exception.*;
 import model.transaction.Transaction;
 import model.transaction.enums.TransactionType;
 
@@ -22,11 +21,11 @@ public class TransactionService {
 
     public void recordTransaction(Transaction transaction) {
         if (transaction == null) {
-            throw new InvalidAccountException(ErrorCode.INVALID_TRANSACTION.getMessage());
+            throw new InvalidTransactionException(ErrorCode.INVALID_TRANSACTION.getMessage());
         }
         String accountNumber = transaction.getAccountNumber();
         if (accountNumber == null || accountNumber.trim().isEmpty()) {
-            throw new InvalidAccountException(ErrorCode.INVALID_TRANSACTION.getMessage());
+            throw new EmptyInputException(ErrorCode.EMPTY_INPUT.getMessage());
         }
         accountTransactions.computeIfAbsent(accountNumber, k -> new ArrayList<>())
                 .add(transaction);
@@ -34,7 +33,7 @@ public class TransactionService {
 
     public List<Transaction> getAccountTransactions(String accountNumber) {
         if (accountNumber == null || accountNumber.trim().isEmpty()) {
-            throw new InvalidAccountException(ErrorCode.INVALID_TRANSACTION.getMessage());
+            throw new EmptyInputException(ErrorCode.EMPTY_INPUT.getMessage());
         }
         return accountTransactions.getOrDefault(accountNumber, new ArrayList<>());
     }
@@ -73,5 +72,16 @@ public class TransactionService {
                         t -> t.getDate().toLocalDate(),
                         Collectors.summingDouble(Transaction::getAmount)
                 ));
+    }
+
+
+    public void processTransaction(Transaction transaction) {
+        try {
+            if (!transaction.isSuccessful()) {
+                throw new TransactionFailedException(ErrorCode.TRANSACTION_FAILED.getMessage());
+            }
+        } catch (Exception e) {
+            throw new TransactionFailedException(ErrorCode.TRANSACTION_FAILED.getMessage());
+        }
     }
 }
