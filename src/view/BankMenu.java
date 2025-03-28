@@ -3,6 +3,8 @@ package view;
 import controller.AccountController;
 import controller.CustomerController;
 import controller.TransactionController;
+import view.menus.CustomerMenu;
+
 import java.util.Scanner;
 
 public class BankMenu {
@@ -10,6 +12,7 @@ public class BankMenu {
     private final AccountController accountController;
     private final CustomerController customerController;
     private final TransactionController transactionController;
+    private final CustomerMenu customerMenu;
 
     public BankMenu(AccountController accountController,
                     CustomerController customerController,
@@ -18,6 +21,7 @@ public class BankMenu {
         this.accountController = accountController;
         this.customerController = customerController;
         this.transactionController = transactionController;
+        this.customerMenu = new CustomerMenu(scanner, customerController);
     }
 
     public void start() {
@@ -56,5 +60,9 @@ public class BankMenu {
         System.out.println("4. Raporlar");
         System.out.println("0. Çıkış");
         System.out.print("Seçiminiz: ");
+    }
+
+    private void showCustomerMenu() {
+        customerMenu.showMenu();
     }
 }
